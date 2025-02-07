@@ -21,7 +21,7 @@ class UserBalanceView extends StatefulWidget {
 
 class _UserBalanceViewState extends State<UserBalanceView> {
   bool isLoading = true;
-  int? expenses; // متغير لتخزين قيمة المصاريف
+  int? expenses; 
 
   @override
   void initState() {
@@ -30,22 +30,28 @@ class _UserBalanceViewState extends State<UserBalanceView> {
   }
 
   Future<void> fetchData() async {
-    UserRepo userRepo = UserRepo();
-    Data? profileData = await userRepo.profileData(); // استخدام الموديل الصحيح
+  UserRepo userRepo = UserRepo();
+  Data? profileData = await userRepo.profileData();
 
-    if (profileData != null) {
-      setState(() {
-        expenses = profileData.expenses; // حفظ القيمة في المتغير
-        isLoading = false;
-      });
-      debugPrint('🔹 قيمة الـ expenses: $expenses');
-    } else {
-      debugPrint('🔹 لم يتم العثور على بيانات الملف الشخصي.');
-      setState(() {
-        isLoading = false;
-      });
-    }
+  debugPrint('📡 البيانات المستلمة: ${profileData.toString()}'); // ✅ طباعة كاملة للبيانات
+
+  if (profileData != null) {
+    debugPrint('🔹 المصاريف قبل التحديث: ${profileData.expenses}');
+
+    setState(() {
+      expenses = profileData.expenses; // حفظ القيمة في المتغير
+      isLoading = false;
+    });
+
+    debugPrint('🔹 المصاريف بعد التحديث: $expenses');
+  } else {
+    debugPrint('🔹 لم يتم العثور على بيانات الملف الشخصي.');
+    setState(() {
+      isLoading = false;
+    });
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +59,9 @@ class _UserBalanceViewState extends State<UserBalanceView> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.whiteColor,
-          leading: IconButton(onPressed: () => LogOutHelper.logout(context), icon: const Icon(Icons.logout)),
+          leading: IconButton(
+              onPressed: () => LogOutHelper.logout(context),
+              icon: const Icon(Icons.logout)),
         ),
         body: Padding(
           padding: const EdgeInsets.all(30),

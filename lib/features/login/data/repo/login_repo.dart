@@ -11,6 +11,7 @@ class LoginRepo {
   ) async {
     try {
       var url = AppConstants.baseUrl + AppConstants.login;
+      debugPrint('Login URL: $url');
       final formData = FormData.fromMap({
         'email': email,
         'password': password,
