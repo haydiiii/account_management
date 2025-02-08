@@ -2,13 +2,16 @@ import 'package:account_management/core/functions/navigation.dart';
 import 'package:account_management/core/utils/text_style.dart';
 import 'package:account_management/core/widgets/image_stack.dart';
 import 'package:account_management/features/admin/data/repo/admin_reo.dart';
+import 'package:account_management/features/admin/data/view_model/expenses_user_res_model.dart';
 import 'package:account_management/features/admin/data/view_model/users_res_model.dart';
 import 'package:account_management/features/admin/presentation/review/review_view.dart';
 import 'package:account_management/features/admin/presentation/review/widgets/details_expenses.dart';
 import 'package:flutter/material.dart';
 
 class ExpensesReviewView extends StatefulWidget {
-  const ExpensesReviewView({super.key});
+  const ExpensesReviewView({
+    super.key,
+  });
 
   @override
   State<ExpensesReviewView> createState() => _ExpensesReviewViewState();
@@ -17,6 +20,7 @@ class ExpensesReviewView extends StatefulWidget {
 class _ExpensesReviewViewState extends State<ExpensesReviewView> {
   final AdminReo _adminRepo = AdminReo();
   List<UserModel> usersList = [];
+
   bool isLoading = true;
 
   @override
@@ -67,21 +71,24 @@ class _ExpensesReviewViewState extends State<ExpensesReviewView> {
                     : Table(
                         border: TableBorder.all(),
                         columnWidths: const {0: FlexColumnWidth()},
-                        children: usersList.map((user) {
+                        children: usersList.map((userr) {
                           return TableRow(
                             children: [
                               InkWell(
                                 onTap: () {
+                                  debugPrint(
+                                      "📌 الموظف المحدد: ID = ${userr.id}, Name = ${userr.name}");
                                   pushReplacement(
                                     context,
                                     ExpensesDetailsView(
-                                        user: user), 
+                                      userr: userr,
+                                    ),
                                   );
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(12.0),
                                   child: Text(
-                                    user.name,
+                                    userr.name,
                                     textAlign: TextAlign.right,
                                     style: getBodyTextStyle(),
                                   ),

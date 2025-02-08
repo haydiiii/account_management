@@ -74,7 +74,8 @@ class _CovenantReviewViewState extends State<CovenantReviewView> {
                                 onTap: () {
                                   pushReplacement(
                                     context,
-                                    CovenantDetailsView(user: user), // ✅ تمرير بيانات المستخدم
+                                    CovenantDetailsView(
+                                        user: user), // ✅ تمرير بيانات المستخدم
                                   );
                                 },
                                 child: Padding(
@@ -96,4 +97,3 @@ class _CovenantReviewViewState extends State<CovenantReviewView> {
     );
   }
 }
-

@@ -3,6 +3,8 @@ import 'package:account_management/core/utils/colors.dart';
 import 'package:account_management/core/utils/text_style.dart';
 import 'package:account_management/core/widgets/custom_button.dart';
 import 'package:account_management/core/widgets/image_stack.dart';
+import 'package:account_management/features/admin/data/repo/admin_reo.dart';
+import 'package:account_management/features/admin/data/view_model/expenses_user_res_model.dart';
 import 'package:account_management/features/admin/presentation/balance_view/balance_view.dart';
 import 'package:account_management/features/admin/presentation/review/widgets/covenant_review_view.dart';
 import 'package:account_management/features/admin/presentation/review/widgets/expenses_review_view.dart';
@@ -22,6 +24,8 @@ class ReviewView extends StatefulWidget {
 class _ReviewViewState extends State<ReviewView> {
   bool isLoading = true;
   int? expenses;
+  int ? id;
+
 
   @override
   void initState() {
@@ -32,6 +36,7 @@ class _ReviewViewState extends State<ReviewView> {
   Future<void> fetchData() async {
     UserRepo userRepo = UserRepo();
     Data? profileData = await userRepo.profileData();
+
 
     debugPrint(
         '📡 البيانات المستلمة: ${profileData.toString()}'); // ✅ طباعة كاملة للبيانات
@@ -100,13 +105,17 @@ class _ReviewViewState extends State<ReviewView> {
                     ),
                     Gap(25),
                     CustomButton(
-                      text: ' مصروفات ',
-                      textColor: AppColors.whiteColor,
-                      onPressed: () {
-                        pushReplacement(context, ExpensesReviewView());
-                      },
-                      color: AppColors.primaryColor,
-                    ),
+  text: ' مصروفات ',
+  textColor: AppColors.whiteColor,
+  onPressed: () {
+    pushReplacement(
+      context,
+      ExpensesReviewView(), // ✅ تمرير الـ id
+    );
+  },
+  color: AppColors.primaryColor,
+),
+
                     Gap(25),
                   ],
                 ),
