@@ -164,57 +164,76 @@ class AdminReo {
   }
 
   Future<EmployeeExpense> fetchExpensesForEmployee({
-    required int id,
-    required int year,
-    required int month,
-  }) async {
-    try {
-      String url =
-          "${AppConstants.baseUrl}${AppConstants.expensesforEmployee}/$id?year=$year&month=$month";
-      debugPrint("📡 رابط الطلب بعد التعديل: $url"); // ✅ طباعة رابط الطلب
+  required int id,
+  required int year,
+  required int month,
+}) async {
+  try {
+    String url =
+        "${AppConstants.baseUrl}${AppConstants.expensesforEmployee}/$id?year=$year&month=$month";
+    debugPrint("📡 رابط الطلب بعد التعديل: $url");
 
-      String token = AppLocalStorage.getCachData(key: AppLocalStorage.token);
-      final response = await Dio().get(
-        url,
-        options: Options(headers: {'Authorization': 'Bearer $token'}),
-      );
+    String token = AppLocalStorage.getCachData(key: AppLocalStorage.token);
+    final response = await Dio().get(
+      url,
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
 
-      debugPrint(
-          "📡 البيانات المستلمة من API: ${response.data}"); // ✅ طباعة البيانات المستلمة
+    debugPrint("📡 البيانات المستلمة من API: ${response.data}");
 
-      if (response.statusCode == 200) {
-        return EmployeeExpense.fromJson(response.data['data']);
+    if (response.statusCode == 200 && response.data['success'] == true) {
+      // ✅ تأكد إن `data` موجودة قبل التحويل
+      if (response.data.containsKey('data')) {
+        EmployeeExpense employeeExpense = EmployeeExpense.fromJson(response.data['data']);
+        debugPrint("📌 إجمالي مصروفات ${employeeExpense.employee}: ${employeeExpense.total}");
+        return employeeExpense;
       } else {
-        throw Exception('❌ فشل تحميل بيانات المصروفات');
+        throw Exception('❌ البيانات غير متاحة');
       }
-    } catch (e) {
-      debugPrint('❌ خطأ أثناء جلب بيانات المصروفات: $e');
-      throw Exception('Error fetching expenses: $e');
+    } else {
+      throw Exception('❌ فشل تحميل بيانات المصروفات');
     }
+  } catch (e) {
+    debugPrint('❌ خطأ أثناء جلب بيانات المصروفات: $e');
+    throw Exception('Error fetching expenses: $e');
   }
+}
+Future<List<UserExpense>> fetchExpensesUser({
+  required int year,
+  required int month,
+}) async {
+  try {
+    String url =
+        "${AppConstants.baseUrl}${AppConstants.expensesUser}?year=$year&month=$month";
+    debugPrint("📡 طلب البيانات من الرابط: $url");
 
-  Future<List<UserExpense>> fetchExpensesUser({
-    required int year,
-    required int month,
-  }) async {
-    try {
-      String url =
-          "${AppConstants.baseUrl}${AppConstants.expensesUser}?year=$year&month=$month";
-      debugPrint("📡 طلب البيانات من الرابط: $url");
-      String token = AppLocalStorage.getCachData(key: AppLocalStorage.token);
-      final response = await Dio().get(
-        url,
-        options: Options(headers: {'Authorization': 'Bearer $token'}),
-      );
-      if (response.statusCode == 200) {
-        final List<dynamic> data = response.data['data'];
-        return data.map((json) => UserExpense.fromJson(json)).toList();
+    String token = AppLocalStorage.getCachData(key: AppLocalStorage.token);
+    final response = await Dio().get(
+      url,
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
+    );
+
+    debugPrint("📡 البيانات المستلمة من API: ${response.data}");
+
+    if (response.statusCode == 200 && response.data['success'] == true) {
+      // ✅ تأكد إن `data` موجودة ومش فاضية قبل التحويل
+      if (response.data.containsKey('data') && response.data['data'] is List) {
+        List<UserExpense> users = (response.data['data'] as List)
+            .map((json) => UserExpense.fromJson(json))
+            .toList();
+
+        debugPrint("📌 عدد الموظفين المسترجعين: ${users.length}");
+        return users;
       } else {
-        throw Exception('❌ فشل تحميل المستخدمين');
+        throw Exception('❌ البيانات غير متاحة أو غير صحيحة');
       }
-    } catch (e) {
-      debugPrint('❌ خطأ أثناء جلب المستخدمين: $e');
-      throw Exception('Error fetching users: $e');
+    } else {
+      throw Exception('❌ فشل تحميل المستخدمين');
     }
+  } catch (e) {
+    debugPrint('❌ خطأ أثناء جلب المستخدمين: $e');
+    throw Exception('Error fetching users: $e');
   }
+}
+
 }

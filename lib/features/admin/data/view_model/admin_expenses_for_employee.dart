@@ -1,74 +1,70 @@
-class ExpenseResponse {
-  final bool success;
-  final String msg;
-  final ExpenseData data;
+class EmployeeExpense {
+  final String employee;
+  final double total;
+  final List<ExpenseData> data;
 
-  ExpenseResponse({
-    required this.success,
-    required this.msg,
+  EmployeeExpense({
+    required this.employee,
+    required this.total,
     required this.data,
   });
 
-  factory ExpenseResponse.fromJson(Map<String, dynamic> json) {
-    return ExpenseResponse(
-      success: json['success'],
-      msg: json['msg'],
-      data: ExpenseData.fromJson(json['data']),
+  factory EmployeeExpense.fromJson(Map<String, dynamic> json) {
+    return EmployeeExpense(
+      employee: json['employee'] ?? '',
+      total: (json['total'] as num?)?.toDouble() ?? 0.0,
+      data: (json['data'] as List<dynamic>?)
+              ?.map((item) => ExpenseData.fromJson(item))
+              .toList() ??
+          [],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "employee": employee,
+      "total": total,
+      "data": data.map((e) => e.toJson()).toList(),
+    };
   }
 }
 
 class ExpenseData {
-  final String employee;
-  final int total;
-  final List<ExpenseItem> items;
-
-  ExpenseData({
-    required this.employee,
-    required this.total,
-    required this.items,
-  });
-
-  factory ExpenseData.fromJson(Map<String, dynamic> json) {
-    return ExpenseData(
-      employee: json['employee'],
-      total: json['total'],
-      items: (json['data'] as List)
-          .map((item) => ExpenseItem.fromJson(item))
-          .toList(),
-    );
-  }
-}
-
-class ExpenseItem {
   final int id;
-  final int amount;
+  final double amount;
   final String notes;
-  final String? image; // ✅ يدعم null بدون مشاكل
+  final String? image;
   final String createdBy;
   final String createdAt;
 
-  ExpenseItem({
+  ExpenseData({
     required this.id,
     required this.amount,
     required this.notes,
-    this.image, // ✅ جعل الحقل اختياري
+    this.image,
     required this.createdBy,
     required this.createdAt,
   });
 
-  factory ExpenseItem.fromJson(Map<String, dynamic> json) {
-    return ExpenseItem(
-      id: json['id'] ?? 0, // ✅ إذا لم يكن هناك ID يتم تعيين 0
-      amount: json['amount'] ?? 0, // ✅ إذا لم يكن هناك مبلغ يتم تعيين 0
-      notes:
-          json['notes'] ?? 'بدون ملاحظات', // ✅ منع الخطأ عند عدم وجود ملاحظات
-      image: json['image'] != null && json['image'] is String
-          ? json['image']
-          : null, // ✅ حل المشكلة نهائيًا
-      createdBy: json['created_by'] ?? 'غير معروف', // ✅ تأمين البيانات ضد null
-      createdAt:
-          json['created_at'] ?? 'غير متاح', // ✅ تعيين قيمة افتراضية لتجنب الخطأ
+  factory ExpenseData.fromJson(Map<String, dynamic> json) {
+    return ExpenseData(
+      id: json['id'],
+      amount: (json['amount'] as num).toDouble(),
+      notes: json['notes'] ?? '',
+      image: json['image'],
+      createdBy: json['created_by'] ?? '',
+      createdAt: json['created_at'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "amount": amount,
+      "notes": notes,
+      "image": image,
+      "created_by": createdBy,
+      "created_at": createdAt,
+    };
   }
 }

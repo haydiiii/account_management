@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:account_management/features/admin/data/view_model/admin_expenses_for_employee.dart';
 import 'package:account_management/features/admin/data/view_model/users_res_model.dart';
 import 'package:flutter/material.dart';
 import 'package:account_management/core/functions/navigation.dart';
@@ -7,7 +8,6 @@ import 'package:account_management/core/utils/colors.dart';
 import 'package:account_management/core/utils/text_style.dart';
 import 'package:account_management/core/widgets/image_widget.dart';
 import 'package:account_management/features/admin/data/repo/admin_reo.dart';
-import 'package:account_management/features/admin/data/view_model/expenses_user_res_model.dart';
 import 'package:account_management/features/admin/presentation/review/widgets/expenses_review_view.dart';
 
 class ExpensesDetailsView extends StatefulWidget {
@@ -176,11 +176,9 @@ class _ExpensesDetailsViewState extends State<ExpensesDetailsView> {
                                           style: getBodyTextStyle())),
                                       DataCell(
                                         data.image?.isNotEmpty ?? false
-                                                ? ImageWidget(
-                                                    imageUrl: data.image)
-                                                : Center(
-                                                    child: Text(
-                                                      '-',
+                                            ? ImageWidget(imageUrl: data.image)
+                                            : Center(
+                                                child: Text('-',
                                                     style: getTitleTextStyle(
                                                         context))),
                                       ),
